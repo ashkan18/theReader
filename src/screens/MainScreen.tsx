@@ -1,11 +1,21 @@
 import React, {Component} from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, GeolocationReturnType, TextInput} from 'react-native';
 import MapboxGL from '@mapbox/react-native-mapbox-gl';
 
 MapboxGL.setAccessToken("pk.eyJ1IjoiYXNoa2FuMTgiLCJhIjoiY2pzdnk5eGRpMGMxcTN5bzRsOHRjdDR2cCJ9.qaLMKiKsDDLnMPLJ-s4rIQ");
 
+interface MapState {
+  centerCoordinate: [number, number],
+  zoom: number,
+  bearing: number,
+  pitch: number
+}
+
 interface State {
-  viewport: {}
+  map: MapState
+  bookInstances: Array<any>
+  currentLocation?: GeolocationReturnType
+  error?: any
 }
 
 export default class MainScreen extends Component<{}, State> {
@@ -13,26 +23,35 @@ export default class MainScreen extends Component<{}, State> {
   constructor(props: {}) {
     super(props);
     this.state = {
-      viewport: {
+      bookInstances: [],
+      map: {
         centerCoordinate: [-74.00, 40.7229971],
-        zoom: 13,
+        zoom: 9,
         bearing: 0,
         pitch: 0,
-        width: 500,
-        height: 500,
-      },
-    };
+      }
+    }
+    this.getCurrentLocation()
   }
 
-  render () {
+  private getCurrentLocation () {
+    navigator.geolocation.getCurrentPosition(
+      (currentLocation: GeolocationReturnType) => this.setState({currentLocation, map: {...this.state.map, centerCoordinate: [currentLocation.coords.longitude, currentLocation.coords.latitude]}}),
+      (error) => this.setState({error: error.message})
+    )
+  }
+
+  public render () {
     return (
-      <MapboxGL.MapView
-          { ...this.state.viewport }
-          showUserLocation={true}
-          style={styles.container}
-          mapStyle="mapbox://styles/ashkan18/cjswesy7d0gqp1fqmkzbtuudr"
-          mapboxApiAccessToken="pk.eyJ1IjoiYXNoa2FuMTgiLCJhIjoiY2pzdnk5eGRpMGMxcTN5bzRsOHRjdDR2cCJ9.qaLMKiKsDDLnMPLJ-s4rIQ">
-      </MapboxGL.MapView>
+      <View style={styles.container}>
+        <TextInput placeholder="Search" style={styles.searchInput}/>
+        <MapboxGL.MapView
+            { ...this.state.map }
+            showUserLocation={true}
+            style={styles.map}
+            mapStyle="mapbox://styles/ashkan18/cjswesy7d0gqp1fqmkzbtuudr">
+        </MapboxGL.MapView>
+      </View>
       );
   }
 }
@@ -40,12 +59,16 @@ export default class MainScreen extends Component<{}, State> {
 const styles = StyleSheet.create({
 	container: {
     flex: 1,
-    alignSelf: 'stretch'
+    alignSelf: 'stretch',
+    flexDirection: "column",
 	},
 	map: {
-		height: 400,
-		marginTop: 80
-	},
+    flex: 1,
+		alignSelf: 'stretch',
+  },
+  searchInput: {
+    marginTop: 50
+  },
 	annotationContainer: {
 		width: 30,
 		height: 30,
