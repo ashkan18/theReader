@@ -10,33 +10,27 @@ import React, {Component} from 'react';
 import {StyleSheet, View} from 'react-native';
 import MainScreen from './screens/MainScreen';
 
+import { createSwitchNavigator, createStackNavigator } from 'react-navigation'
 
-type Props = {};
-export default class App extends Component<Props> {
-  render() {
-    return (
-      <View style={styles.container}>
-        <MainScreen />
-      </View>
-    );
+import LoginScreen from './screens/LoginScreen';
+
+const AppStack = createStackNavigator(
+  {
+    Main:  MainScreen,
+  },
+  {
+    initialRouteName: "Main"
   }
-}
+)
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+const AuthStack = createStackNavigator({ Login: LoginScreen });
+
+export default createSwitchNavigator(
+  {
+    App: AppStack,
+    Auth: AuthStack,
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
+  {
+    initialRouteName: 'AuthLoading',
+  }
+);
