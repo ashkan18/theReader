@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {View, StyleSheet, GeolocationReturnType} from 'react-native';
 import MapboxGL from '@mapbox/react-native-mapbox-gl'
-import FormTextInput from '../components/FormTextInput'
+import { SearchBar, Header } from 'react-native-elements'
 
 MapboxGL.setAccessToken("pk.eyJ1IjoiYXNoa2FuMTgiLCJhIjoiY2pzdnk5eGRpMGMxcTN5bzRsOHRjdDR2cCJ9.qaLMKiKsDDLnMPLJ-s4rIQ");
 
@@ -14,6 +14,7 @@ interface MapState {
 
 interface State {
   map: MapState
+  searchTerm: string
   bookInstances: Array<any>
   currentLocation?: GeolocationReturnType
   error?: any
@@ -24,6 +25,7 @@ export default class MainScreen extends Component<{}, State> {
   constructor(props: {}) {
     super(props);
     this.state = {
+      searchTerm: '',
       bookInstances: [],
       map: {
         centerCoordinate: [-74.00, 40.7229971],
@@ -45,9 +47,22 @@ export default class MainScreen extends Component<{}, State> {
   public render () {
     return (
       <View style={styles.container}>
-        <View>
-          <FormTextInput placeholder="Search" style={styles.searchInput}/>
-        </View>
+        <Header
+          placement="left"
+          containerStyle={styles.headerContainerStyle}
+          centerComponent={{ text: 'ReadToMe', style: { color: 'orange' } }}
+          rightComponent={{ icon: 'home', color: 'orange' }}
+        />
+        <SearchBar
+          containerStyle={styles.searchContainer}
+          inputContainerStyle={styles.searchInput}
+          inputStyle={styles.searchInput}
+          placeholder="Search"
+          onChangeText={this.updateSearch}
+          value={this.state.searchTerm}
+          rightIconContainerStyle={styles.searchInput}
+          leftIconContainerStyle={styles.searchInput}
+        />
         <MapboxGL.MapView
             { ...this.state.map }
             showUserLocation={true}
@@ -57,20 +72,28 @@ export default class MainScreen extends Component<{}, State> {
       </View>
       );
   }
+
+  private updateSearch = (searchTerm: string) => {
+    this.setState({ searchTerm });
+  };
 }
 
 const styles = StyleSheet.create({
 	container: {
     flex: 1,
-    alignSelf: 'stretch',
-    flexDirection: "column",
-	},
+  },
+  headerContainerStyle: {
+    backgroundColor: 'white'
+  },
 	map: {
     flex: 1,
 		alignSelf: 'stretch',
   },
+  searchContainer: {
+    backgroundColor: 'white',
+  },
   searchInput: {
-    marginTop: 50
+    backgroundColor: 'white'
   },
 	annotationContainer: {
 		width: 30,
