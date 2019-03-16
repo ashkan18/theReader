@@ -35,4 +35,6 @@ target 'theReader' do
   # RN-Vector-Icons
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
+  pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
+
 end

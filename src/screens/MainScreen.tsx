@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
-import {View, StyleSheet, GeolocationReturnType, TextInput} from 'react-native';
-import MapboxGL from '@mapbox/react-native-mapbox-gl';
+import {View, StyleSheet, GeolocationReturnType} from 'react-native';
+import MapboxGL from '@mapbox/react-native-mapbox-gl'
+import FormTextInput from '../components/FormTextInput'
 
 MapboxGL.setAccessToken("pk.eyJ1IjoiYXNoa2FuMTgiLCJhIjoiY2pzdnk5eGRpMGMxcTN5bzRsOHRjdDR2cCJ9.qaLMKiKsDDLnMPLJ-s4rIQ");
 
@@ -44,7 +45,9 @@ export default class MainScreen extends Component<{}, State> {
   public render () {
     return (
       <View style={styles.container}>
-        <TextInput placeholder="Search" style={styles.searchInput}/>
+        <View>
+          <FormTextInput placeholder="Search" style={styles.searchInput}/>
+        </View>
         <MapboxGL.MapView
             { ...this.state.map }
             showUserLocation={true}

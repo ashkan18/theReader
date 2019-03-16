@@ -40,7 +40,7 @@ export default class LoginScreen extends Component<Props, State> {
   handleLoginPress = () => {
     console.log("Login button pressed")
     this.authService.login(this.state.username, this.state.password)
-    .then( (_token: string) => this.props.navigation.navigate('App') )
+    .then( (_token: string) => this.props.navigation.navigate('Main') )
     .catch( (_error: string) => {
       console.log(_error)
       this.setState({error: "Username and Password don't match. Please try again."})
@@ -55,11 +55,16 @@ export default class LoginScreen extends Component<Props, State> {
           <FormTextInput
             value={this.state.username}
             onChangeText={this.handleUsernameChange}
-            placeholder={strings.EMAIL_PLACEHOLDER}
+            autoCapitalize={'none'}
+            placeholder={strings.USERNAME_PLACEHOLDER}
             keyboardType="email-address"
           />
           <FormTextInput
             value={this.state.password}
+            secureTextEntry={true}
+            returnKeyType={'done'}
+            autoCapitalize={'none'}
+            autoCorrect={false}
             onChangeText={this.handlePasswordChange}
             placeholder={strings.PASSWORD_PLACEHOLDER}
             textContentType="password"

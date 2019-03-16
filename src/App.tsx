@@ -6,13 +6,12 @@
  * @flow
  */
 
-import React, {Component} from 'react';
-import {StyleSheet, View} from 'react-native';
 import MainScreen from './screens/MainScreen';
 
-import { createSwitchNavigator, createStackNavigator } from 'react-navigation'
+import { createSwitchNavigator, createStackNavigator, createAppContainer } from 'react-navigation'
 
 import LoginScreen from './screens/LoginScreen';
+import StartScreen from './screens/StartScreen';
 
 const AppStack = createStackNavigator(
   {
@@ -25,12 +24,17 @@ const AppStack = createStackNavigator(
 
 const AuthStack = createStackNavigator({ Login: LoginScreen });
 
-export default createSwitchNavigator(
+const RootStack = createSwitchNavigator(
   {
+    Start: StartScreen,
     App: AppStack,
     Auth: AuthStack,
   },
   {
-    initialRouteName: 'AuthLoading',
+    initialRouteName: 'Start',
   }
-);
+)
+
+const App = createAppContainer(RootStack);
+
+export default App
