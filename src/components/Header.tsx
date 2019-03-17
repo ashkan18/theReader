@@ -4,6 +4,7 @@ import { StyleSheet, Text, TouchableOpacity, View, Image } from "react-native";
 interface Props {
   title: string
   user?: User
+  navigation: any
 }
 
 class Header extends React.Component<Props> {
@@ -13,9 +14,12 @@ class Header extends React.Component<Props> {
       : "https://react.semantic-ui.com/images/avatar/small/elliot.jpg"
     return (
       <View style={styles.container}>
-        <Text>{this.props.title}</Text>
         <TouchableOpacity>
           <Image source={{ uri: profileImage}} style={styles.stretch} />
+        </TouchableOpacity>
+        <Text>{this.props.title}</Text>
+        <TouchableOpacity onPress={ () => this.props.navigation.navigate('BookScanner')}>
+          <Text>+</Text>
         </TouchableOpacity>
       </View>
     );

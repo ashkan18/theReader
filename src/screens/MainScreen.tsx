@@ -22,18 +22,20 @@ interface State {
   error?: any
 }
 
-export default class MainScreen extends Component<{}, State> {
+interface Props {
+  navigation: any
+}
+
+export default class MainScreen extends Component<Props, State> {
   authService: AuthService = new AuthService
 
-  constructor(props: {}) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       bookInstances: [],
       map: {
         centerCoordinate: [-74.00, 40.7229971],
-        zoom: 9,
-        bearing: 0,
-        pitch: 0,
+        zoom: 15
       }
     }
     this.getCurrentLocation()
@@ -56,7 +58,7 @@ export default class MainScreen extends Component<{}, State> {
   public render () {
     return (
       <View style={styles.container}>
-        <Header title="ReadToMe" user={this.state.user}/>
+        <Header title="ReadToMe" user={this.state.user} navigation={this.props.navigation}/>
         <View style={styles.searchContainer}>
           <FormTextInput placeholder="Search" style={styles.searchInput}/>
           <Text>📙</Text>

@@ -11,11 +11,15 @@ import MainScreen from './screens/MainScreen';
 import { createSwitchNavigator, createStackNavigator, createAppContainer } from 'react-navigation'
 
 import LoginScreen from './screens/LoginScreen';
-import StartScreen from './screens/StartScreen';
+import StartScreen from './screens/StartScreen'
+import BookScanner from './screens/BookScanner'
+import SubmitBook from './screens/SubmitBook'
 
 const AppStack = createStackNavigator(
   {
     Main:  MainScreen,
+    BookScanner: BookScanner,
+    SubmitBook: SubmitBook
   },
   {
     initialRouteName: "Main"

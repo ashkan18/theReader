@@ -1,6 +1,5 @@
-import axios from 'axios'
-import AuthService from './auth_service';
-import { AxiosResponse } from 'axios';
+import axios, { AxiosResponse } from 'axios'
+import AuthService from './AuthService'
 
 interface FindResponse{
   book: any
