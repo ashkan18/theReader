@@ -1,5 +1,6 @@
 import axios from 'axios'
 import AuthService from './auth_service';
+import { AxiosResponse } from 'axios';
 
 interface FindResponse{
   book: any
@@ -22,13 +23,13 @@ export default class BookService {
   public findBook(isbn: string): Promise<FindResponse>{
     return new Promise((resolve, rejected) =>
       this.authService.getToken()
-      .then( token => {
+      .then( (token:string) => {
         axios.get(`https://readtome.herokuapp.com/api/find_in_the_wild?isbn=${isbn}`,
         { headers: { 'Authorization': `Bearer ${token}` }})
-        .then( response => resolve(response.data))
-        .catch( error => rejected(error))
+        .then( (response: AxiosResponse) => resolve(response.data))
+        .catch( (error: any) => rejected(error))
       })
-      .catch(error => rejected(error))
+      .catch((error:any) => rejected(error))
     )
   }
 

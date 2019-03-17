@@ -20,6 +20,19 @@ export default class AuthService {
     )
   }
 
+  public me(): Promise<User> {
+    return new Promise((resolve, rejected) =>
+      this.getToken()
+      .then( (token) => {
+        axios.get("https://readtome.herokuapp.com/api/me",
+        { headers: { 'Authorization': `Bearer ${token}` }})
+        .then( (response: AxiosResponse) => resolve(response.data))
+        .catch( (error: any) => rejected(error))
+      })
+      .catch((error:any) => rejected(error))
+    )
+  }
+
   setToken = (token: string) => {
     // Saves user token to localStorage
     AsyncStorage.setItem('userToken', token)
