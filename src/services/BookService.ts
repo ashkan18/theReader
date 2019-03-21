@@ -50,6 +50,7 @@ export default class BookService {
   }
 
   public fetchBooks(lat: number, lng: number, term: string): Promise<Array<BookInstance>>{
+    console.log("----->", lat, lng)
     return new Promise((resolve, rejected) =>
       this.authService.getToken()
       .then( token => {
@@ -79,7 +80,7 @@ export default class BookService {
                 }
               }
             `,
-            variables: {term: term, lat: lat, lng: lng }
+            variables: {term: null, lat: lat, lng: lng }
           },
           headers: { 'Authorization': `Bearer ${token}`} }
         )
