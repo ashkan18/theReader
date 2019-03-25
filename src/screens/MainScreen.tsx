@@ -74,7 +74,7 @@ export default class MainScreen extends Component<Props, State> {
 
   renderAnnotations () {
     const {bookInstances} = this.state
-    return bookInstances.map( bi => <BookMarker key={bi.id} bookInstance={bi} />)
+    return bookInstances.map( bi => <BookMarker key={bi.id} bookInstance={bi} map={this.map} />)
   }
 
   public render () {
