@@ -4,13 +4,13 @@ import { Text, View, TouchableOpacity, StyleSheet } from 'react-native'
 import BookService from '../services/BookService';
 import { RNCamera } from 'react-native-camera';
 
-
 interface Props {
   navigation: any
 }
 interface State {
-  scannedBarcode?: string,
+  scannedBarcode: string | null,
   error?: string
+  camera: any
 }
 
 export default class BookScanner extends React.Component<Props, State> {
@@ -20,7 +20,14 @@ export default class BookScanner extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
     this.camera = null
-    this.readBarcode = this.readBarcode.bind(this)
+    this.state = {
+      camera: {
+        type: RNCamera.Constants.Type.back,
+        flashMode: RNCamera.Constants.FlashMode.auto,
+        barcodeFinderVisible: true
+      },
+      scannedBarcode: null
+    }
   }
 
   render() {
@@ -32,10 +39,10 @@ export default class BookScanner extends React.Component<Props, State> {
           }}
           style={styles.preview}
           type={RNCamera.Constants.Type.back}
-          flashMode={RNCamera.Constants.FlashMode.on}
+          flashMode={this.state.camera.flashMode}
+          onBarCodeRead={this.onBarCodeRead.bind(this)}
           permissionDialogTitle={'Permission to use camera'}
           permissionDialogMessage={'We need your permission to use your camera phone to scan books barcode.'}
-          onGoogleVisionBarcodesDetected={ this.readBarcode }
         />
         <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
           <TouchableOpacity onPress={() => this.props.navigation.goBack()} style={styles.capture}>
@@ -46,10 +53,11 @@ export default class BookScanner extends React.Component<Props, State> {
     )
   }
 
-  readBarcode = (scanned:any) => {
-    if (this.state.scannedBarcode === null) {
-      this.bookService.findBook(scanned.data)
-      .then( response => this.props.navigation.navigate('SubmitBook', { book: response.book, external: response.external }))
+  onBarCodeRead = (scanResult:any) => {
+    if (this.state.scannedBarcode === null && scanResult.data !== null) {
+      this.setState({scannedBarcode: scanResult.data})
+      this.bookService.findBook(scanResult.data)
+      .then( response => this.props.navigation.navigate('SubmitBook', { book: response.book }))
       .catch( error => this.setState({error}))
     }
   }

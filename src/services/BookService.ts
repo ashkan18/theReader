@@ -3,7 +3,6 @@ import AuthService from './AuthService'
 
 interface FindResponse{
   book: any
-  external: any
 }
 
 interface Coords {
@@ -22,24 +21,82 @@ export default class BookService {
   public findBook(isbn: string): Promise<FindResponse>{
     return new Promise((resolve, rejected) =>
       this.authService.getToken()
-      .then( (token:string) => {
-        axios.get(`https://readtome.herokuapp.com/api/find_in_the_wild?isbn=${isbn}`,
-        { headers: { 'Authorization': `Bearer ${token}` }})
-        .then( (response: AxiosResponse) => resolve(response.data))
+      .then( token => {
+        console.warn(token)
+        axios({
+          url: "https://readtome.herokuapp.com/api/",
+          method: "post",
+          data: {
+            query: `
+              mutation findBookInTheWild($isbn: String!) {
+                findInTheWild(isbn: $isbn){
+                  title
+                  id
+                  smallCoverUrl
+                  authors(first: 10) {
+                    edges {
+                      node {
+                        id
+                        name
+                      }
+                    }
+                  }
+                }
+              }
+            `,
+            variables: {
+              isbn,
+            }
+          },
+          headers: { 'Authorization': `Bearer ${token}`} }
+        )
+        .then( (response: AxiosResponse) => {
+          console.warn(response.data.errors)
+          return resolve(response.data)
+        })
         .catch( (error: any) => rejected(error))
       })
       .catch((error:any) => rejected(error))
     )
   }
 
-  public submitBook(coords: Coords, bookId: string): Promise<{}>{
+  public postBook(coords: Coords, bookId: string): Promise<{}>{
     return new Promise((resolve, rejected) =>
       this.authService.getToken()
       .then( token => {
         axios({
-          url: "https://readtome.herokuapp.com/api/book_instances",
+          url: "https://readtome.herokuapp.com/api/",
           method: "post",
-          data: { book_instance: { medium: 'test', offerings: 'reading',  condition: 'fair', lat: coords.latitude, lng: coords.longitude, book_id: bookId} },
+          data: {
+            query: `
+              mutation postBook($bookId: !ID, $lat: Float, $lng: Float, $offerings: String!, $availability: String!, $medium: String!, $condition: String) {
+                postBook(bookId: $bookId, offerings: $offerings, availability: $availability, medium: $medium, condition: $condition, lat: $lat, lng: $lng){
+                  id
+                  location
+                  book {
+                    title
+                    id
+                    authors(first: 10) {
+                      edges {
+                        node {
+                          id
+                          name
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            `,
+            variables: {
+              medium: 'test',
+              offerings: 'reading',
+              condition: 'fair',
+              lat: coords.latitude,
+              lng: coords.longitude,
+              bookId: bookId
+            }
+          },
           headers: { 'Authorization': `Bearer ${token}`} }
         )
         .then( response => resolve(response.data))
@@ -50,7 +107,6 @@ export default class BookService {
   }
 
   public fetchBooks(lat: number, lng: number, term: string): Promise<Array<BookInstance>>{
-    console.log("----->", lat, lng)
     return new Promise((resolve, rejected) =>
       this.authService.getToken()
       .then( token => {
@@ -70,21 +126,28 @@ export default class BookService {
                   book {
                     id
                     title
-                    authors {
-                      name
-                      id
-                      bio
+                    smallCoverUrl
+                    authors(first: 10) {
+                      edges {
+                        node {
+                          name
+                          id
+                          bio
+                        }
+                      }
                     }
                   }
                   location
                 }
               }
             `,
-            variables: {term: null, lat: lat, lng: lng }
+            variables: {term: null, lat, lng }
           },
           headers: { 'Authorization': `Bearer ${token}`} }
         )
-        .then( response => resolve(response.data.data.bookInstances))
+        .then( response => {
+          return resolve(response.data.data.bookInstances);
+        })
         .catch( error => rejected(error))
       })
       .catch(error => rejected(error))

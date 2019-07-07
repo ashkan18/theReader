@@ -5,4 +5,5 @@ interface Book {
   isbn: string
   coverUrl: string
   description: string
+  smallCoverUrl: string
 }

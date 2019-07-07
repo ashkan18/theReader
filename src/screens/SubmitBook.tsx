@@ -41,7 +41,7 @@ export default class SubmitBook extends React.Component<Props, State>{
     navigator.geolocation.getCurrentPosition(
       ((location: Position) => {
         let bookService = new BookService
-        bookService.submitBook(location.coords, this.state.book.id)
+        bookService.postBook(location.coords, this.state.book.id)
         .then( _response => {
           this.props.navigation.navigate('Map')
         })
