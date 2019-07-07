@@ -15,6 +15,8 @@ import StartScreen from './screens/StartScreen'
 import BookScanner from './screens/BookScanner'
 import SubmitBook from './screens/SubmitBook'
 
+navigator.geolocation = require('@react-native-community/geolocation');
+
 const AppStack = createStackNavigator(
   {
     Main:  MainScreen,
