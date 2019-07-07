@@ -56,3 +56,6 @@ buck-out/
 *.jsbundle
 
 .jest/
+
+# CocoaPods
+/ios/Pods/
